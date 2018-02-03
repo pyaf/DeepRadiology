@@ -23,7 +23,7 @@ def index(request):
         images = []
         for img in images_files:
             image = Image.open(BytesIO(img.read()))
-            image.convert('RGB')
+            image = image.convert('RGB')
             images.append(data_transforms(image))
         study = torch.stack(images)
         output, preds = predict(study)
