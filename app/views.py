@@ -1,5 +1,4 @@
 from io import BytesIO
-
 import torch
 from PIL import Image
 from django.shortcuts import render
