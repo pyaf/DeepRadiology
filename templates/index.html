@@ -1,5 +1,20 @@
 <!doctype html>
 <html lang="en">
+
+{% load static %}
+
+<script type="text/javascript">
+    function show_loading() {
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("content").style.display = "block";
+    }
+
+    function show_input(iid) {
+        console.log(iid);
+        document.getElementById(iid).style.display = "block";
+    }
+</script>
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -11,28 +26,40 @@
 
     <title>Deep Radiology</title>
 </head>
-<body>
+<body background="{% static "xray.jpg" %}">
 
-<div class="jumbotron"><h2>Welcome to Deep Radiology!</h2></div>
-<div>
-    <form method="post" enctype="multipart/form-data">
+<div class="jumbotron"><h2>Welcome to DeepRadiology!</h2></div>
+<div style="text-align: center">
+    <form id="upload_form" method="post" class="center" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="file" name="image1">
-        <input type="file" name="image2">
-        <input type="file" name="image3">
-        <input type="file" name="image4">
-        <input type="file" name="image5">
-        <input type="file" name="image6">
-        <button type="submit">Upload</button>
+        <div class="form-group" onchange="show_input('in2')"><input type="file" name="image1"></div>
+        <div id="in2" class="form-group" onchange="show_input('in3')" style="display: none"><input type="file" name="image2"></div>
+        <div id="in3" class="form-group" onchange="show_input('in4')" style="display: none"><input type="file" name="image3"></div>
+        <div id="in4" class="form-group" onchange="show_input('in5')" style="display: none"><input type="file" name="image4"></div>
+        <div id="in5" class="form-group" onchange="show_input('in6')" style="display: none"><input type="file" name="image5"></div>
+        <div id="in6" class="form-group" onchange="show_input('in7')" style="display: none"><input type="file" name="image6"></div>
+        <div id="in7" class="form-group" onchange="show_input('in8')" style="display: none"><input type="file" name="image7"></div>
+        <div id="in8" class="form-group" onchange="show_input('in9')" style="display: none"><input type="file" name="image8"></div>
+        <div id="in9" class="form-group" onchange="show_input('in10')" style="display: none"><input type="file" name="image9"></div>
+        <div id="in10" class="form-group" onchange="show_input('in11')" style="display: none"><input type="file" name="image10"></div>
+        <div id="in11" class="form-group" style="display: none">Can't upload more than 10 images!</div>
+        <button type="submit" class="btn btn-info" onclick="show_loading()">Upload</button>
     </form>
 
-    {% if status %}
-        <p>Successfully uploaded images!</p>
-        <p>Probability: {{output}}</p>
-        <p>Prediction: {{preds}}</p>
+    <div id="loading" style="display: none;">
+        <img src="https://media.giphy.com/media/cZDRRGVuNMLOo/giphy.gif" height="200">
+        <div>Please wait while we run our tests....</div>
+    </div>
 
+    {% if status == 'success' %}
+        <p>Here are your results:</p>
+        <p>Probability: {{output}} %</p>
+        <p>Prediction: {{preds}}</p>
+    {% elif status == "no_image" %}
+        <p>No image selected</p>
     {% endif %}
 </div>
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
