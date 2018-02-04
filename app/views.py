@@ -17,8 +17,7 @@ data_transforms = transforms.Compose([
 def index(request):
     template_name = 'index.html'
     if request.method == 'POST':
-        print(request.FILES)
-        images_files = [request.FILES['images']]
+        images_files = request.FILES.getlist('images')
         if not images_files:
             return render(request, template_name, {'status': "no_image"})
         images = []
