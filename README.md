@@ -13,11 +13,11 @@ Trained model state is stored [here](https://github.com/pyaf/DeepRadiology/blob/
 
 * PyTorch 0.3
 * Django 1.11
-* Pillow
+* Pillow 5.0.0
 
 ## How to run this project
-* Install the dependencies
-* run `python manage.py runserver`
+* Install the dependencies by `pip install -r requirements.txt`
+* run the server with `python manage.py runserver`
 
 ## The Team "Bhaukali"
 * [Hemanth Sai](https://github.com/Hemanth73)
