@@ -1,11 +1,13 @@
+import os
 import torch
 import time
 from torch.autograd import Variable
 from .densenet import densenet169
+from DeepRadiology.settings import BASE_DIR
 
-
+model_path = os.path.join(BASE_DIR, 'densenet/v2.2.pth')
 model = densenet169(pretrained=True)
-model.load_state_dict(torch.load('densenet/v2.2.pth', 
+model.load_state_dict(torch.load(model_path, 
 			map_location=lambda storage, loc: storage))
 
 def predict(study):
