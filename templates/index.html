@@ -3,17 +3,93 @@
 
 {% load static %}
 
-<script type="text/javascript">
-    function show_loading() {
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("content").style.display = "block";
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<style>
+
+    .thumbnail {
+
+        height: 100px;
+        margin: 10px;
+        float: left;
     }
 
-    function show_input(iid) {
-        console.log(iid);
-        document.getElementById(iid).style.display = "block";
+    #result {
+        border: 4px dotted #cccccc;
+        display: none;
+        margin: 0 auto;
+        width: 511px;
     }
+</style>
+
+
+<script type="text/javascript">
+
+    window.onload = function () {
+        //Check File API support
+        if (window.File && window.FileList && window.FileReader) {
+            $('#files').on("change", null, function (event) {
+                var files = event.target.files; //FileList object
+                $("#predictions").hide();
+                var output = document.getElementById("result");
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    //Only pics
+                    // if(!file.type.match('image'))
+                    if (file.type.match('image.*')) {
+                        if (this.files[0].size < 2097152) {
+                            // continue;
+                            var picReader = new FileReader();
+                            picReader.addEventListener("load", function (event) {
+                                var picFile = event.target;
+                                var div = document.createElement("div");
+                                div.innerHTML = "<img class='thumbnail' src='" + picFile.result + "'" +
+                                    "title='preview image'/>";
+                                output.insertBefore(div, null);
+                            });
+                            //Read the image
+                            $('#result').show();
+                            picReader.readAsDataURL(file);
+                        } else {
+                            alert("Image Size is too big. Maximum size is 2MB.");
+                            $(this).val("");
+                        }
+                    } else {
+                        alert("You can only upload image file.");
+                        $(this).val("");
+                    }
+                }
+
+            });
+        }
+        else {
+            console.log("Your browser does not support File API");
+        }
+    };
+
+    $('#files').click(function () {
+        $('.thumbnail').parent().remove();
+        $('result').hide();
+        $(this).val("");
+    });
+
+    function show_loading() {
+        document.getElementById("loading").style.display = "block";
+    }
+
 </script>
+
 
 <head>
     <!-- Required meta tags -->
@@ -32,44 +108,33 @@
 <div style="text-align: center">
     <form id="upload_form" method="post" class="center" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-group" onchange="show_input('in2')"><input type="file" name="image1"></div>
-        <div id="in2" class="form-group" onchange="show_input('in3')" style="display: none"><input type="file" name="image2"></div>
-        <div id="in3" class="form-group" onchange="show_input('in4')" style="display: none"><input type="file" name="image3"></div>
-        <div id="in4" class="form-group" onchange="show_input('in5')" style="display: none"><input type="file" name="image4"></div>
-        <div id="in5" class="form-group" onchange="show_input('in6')" style="display: none"><input type="file" name="image5"></div>
-        <div id="in6" class="form-group" onchange="show_input('in7')" style="display: none"><input type="file" name="image6"></div>
-        <div id="in7" class="form-group" onchange="show_input('in8')" style="display: none"><input type="file" name="image7"></div>
-        <div id="in8" class="form-group" onchange="show_input('in9')" style="display: none"><input type="file" name="image8"></div>
-        <div id="in9" class="form-group" onchange="show_input('in10')" style="display: none"><input type="file" name="image9"></div>
-        <div id="in10" class="form-group" onchange="show_input('in11')" style="display: none"><input type="file" name="image10"></div>
-        <div id="in11" class="form-group" style="display: none">Can't upload more than 10 images!</div>
-        <button type="submit" class="btn btn-info" onclick="show_loading()">Upload</button>
+        <div class="btn-group-vertical">
+            <label for="files">Upload images here:</label>
+            <input id="files" type="file" multiple name="images"/>
+            <br>
+        </div>
+        <div>
+            <output id="result"><br></output>
+        </div>
+        <button type="submit" class="btn btn-info center" value="Submit" onclick="show_loading()">
+            Upload
+        </button>
     </form>
 
-    <div id="loading" style="display: none;">
-        <img src="https://media.giphy.com/media/cZDRRGVuNMLOo/giphy.gif" height="200">
+    <div id="loading" class="btn-group-vertical" style="display: none;">
+        <img src="https://loading.io/spinners/microsoft/lg.rotating-balls-spinner.gif" style="margin: 10px" height="80">
         <div>Please wait while we run our tests....</div>
     </div>
-
-    {% if status == 'success' %}
-        <p>Here are your results:</p>
-        <p>Probability: {{output}} %</p>
-        <p>Prediction: {{preds}}</p>
-    {% elif status == "no_image" %}
-        <p>No image selected</p>
-    {% endif %}
+    <div id="predictions">
+        {% if status == 'success' %}
+            <p>Here are your results:</p>
+            <p>Probability: {{ output }} %</p>
+            <p>Prediction: {{ preds }}</p>
+        {% elif status == "no_image" %}
+            <p>No image selected</p>
+        {% endif %}
+    </div>
 </div>
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
 </body>
 </html>

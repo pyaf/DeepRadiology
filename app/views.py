@@ -17,19 +17,19 @@ data_transforms = transforms.Compose([
 def index(request):
     template_name = 'index.html'
     if request.method == 'POST':
-        images_files = [request.FILES[file] for file in
-                        request.FILES if "image" in file]
+        print(request.FILES)
+        images_files = [request.FILES['images']]
         if not images_files:
             return render(request, template_name, {'status': "no_image"})
         images = []
         for img in images_files:
             image = Image.open(BytesIO(img.read()))
-            image.convert('RGB')
+            image = image.convert('RGB')
             images.append(data_transforms(image))
         study = torch.stack(images)
         output, preds = predict(study)
         context = {'output': round(output.numpy()[0] * 100, 2),
-                   'preds': "Normal" if preds.numpy()[0]==0 else "Abnormal",
+                   'preds': "Normal" if preds.numpy()[0] == 0 else "Abnormal",
                    'status': "success"}
         return render(request, template_name, context)
     return render(request, template_name)
