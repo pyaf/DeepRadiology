@@ -24,4 +24,7 @@ Trained model state is stored [here](https://github.com/pyaf/DeepRadiology/blob/
 * [Srimukha Paturi](https://github.com/sm-iitbhu)
 * Myself :)
 
+## Result
+Won third prize among ~75 teams.:)
+
 *Feel free to raise an issue to know more about this project.*
