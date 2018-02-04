@@ -128,7 +128,7 @@
     <div id="predictions">
         {% if status == 'success' %}
             <p>Here are your results:</p>
-            <p>Probability: {{ output }} %</p>
+            <p>Probability (%): {{ output }} %</p>
             <p>Prediction: {{ preds }}</p>
         {% elif status == "no_image" %}
             <p>No image selected</p>
