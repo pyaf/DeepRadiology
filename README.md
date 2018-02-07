@@ -12,7 +12,7 @@ The model is a 169 layer DenseNet with single node output layer initialized with
 
 To know more about training process: [DenseNet-MURA-PyTorch](https://github.com/pyaf/DenseNet-MURA-PyTorch).
 
-Trained model state is stored [here](https://github.com/pyaf/DeepRadiology/blob/master/densenet/v2.2.pth).
+Trained model state is stored [here](https://github.com/pyaf/DeepRadiology/blob/master/densenet/v2.2.pth). The model was trained on WRIST study type only, due to time constraints.
 
 ## Dependencies
 
